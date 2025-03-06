@@ -23,17 +23,14 @@ public class BeerOrders {
         return """
                 Invoice for %s:
                 %s
-                Total: %s€""".formatted(
-                pubName,
-                getCollect(),
-                getTotalCost());
+                Total: %s€""".formatted(pubName, getBeerList(), getTotalCost());
     }
 
     public boolean isOverBudget(double budget) {
         return getTotalCost() > budget;
     }
 
-    private String getCollect() {
+    private String getBeerList() {
         return orders.stream()
                 .map(BeerOrder::toString)
                 .collect(Collectors.joining("\n"));
