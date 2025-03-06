@@ -1,9 +1,9 @@
 package com.beauce.goldcoincollector.solution;
 
 public class BeerOrderService {
-    public String generateInvoice(String pubName,
+    public String generateInvoice(Pub pub,
                                   BeerOrders orders) {
-        return orders.generateInvoice(pubName);
+        return orders.generateInvoice(pub);
     }
 
     public boolean isOverBudget(BeerOrders orders,

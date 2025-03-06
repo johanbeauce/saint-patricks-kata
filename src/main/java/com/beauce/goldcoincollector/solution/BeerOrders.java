@@ -15,15 +15,15 @@ public class BeerOrders {
 
     public double getTotalCost() {
         return orders.stream()
-                .mapToDouble(beerOrder -> beerOrder.getTotalCost().doubleValue())
+                .mapToDouble(BeerOrder::getTotalCost)
                 .sum();
     }
 
-    public String generateInvoice(String pubName) {
+    public String generateInvoice(Pub pub) {
         return """
                 Invoice for %s:
                 %s
-                Total: %s€""".formatted(pubName, getBeerList(), getTotalCost());
+                Total: %s€""".formatted(pub.name(), getBeerList(), getTotalCost());
     }
 
     public boolean isOverBudget(double budget) {
