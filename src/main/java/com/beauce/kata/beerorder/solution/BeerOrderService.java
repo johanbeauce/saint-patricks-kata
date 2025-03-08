@@ -1,7 +1,5 @@
 package com.beauce.kata.beerorder.solution;
 
-import java.util.List;
-
 public class BeerOrderService {
     public String generateInvoice(Pub pub,
                                   BeerOrders beerOrders) {
@@ -15,12 +13,8 @@ public class BeerOrderService {
         return result.toString();
     }
 
-    public boolean isOverBudget(List<Integer> quantities, List<Double> unitPrices, double budget) {
-        double totalCost = 0;
-        for (int i = 0; i < quantities.size(); i++) {
-            totalCost += quantities.get(i) * unitPrices.get(i);
-        }
-
-        return totalCost > budget;
+    public boolean isOverBudget(BeerOrders beerOrders,
+                                double budget) {
+        return beerOrders.getTotalPrice() > budget;
     }
 }

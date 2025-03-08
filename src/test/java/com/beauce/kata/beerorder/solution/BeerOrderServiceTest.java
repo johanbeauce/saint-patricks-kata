@@ -3,9 +3,6 @@ package com.beauce.kata.beerorder.solution;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BeerOrderServiceTest {
@@ -24,6 +21,7 @@ class BeerOrderServiceTest {
         var beerOrders = new BeerOrders(
                 new BeerOrder(guinnessBeer, 10),
                 new BeerOrder(kilkennyBeer, 5));
+
         var invoice = service.generateInvoice(pub, beerOrders);
 
         assertThat(invoice)
@@ -35,23 +33,21 @@ class BeerOrderServiceTest {
 
     @Test
     void shouldDetectOverBudgetOrders() {
-        assertThat(
-                service.isOverBudget(
-                        List.of(20, 15),
-                        List.of(6.0, 5.5),
-                        100.0
-                )
-        ).isTrue();
+        var beerOrders = new BeerOrders(
+                new BeerOrder(new Beer("Beer1", 6.0), 20),
+                new BeerOrder(new Beer("Beer2", 5.5), 15));
+
+        assertThat(service.isOverBudget(beerOrders, 100.0))
+                .isTrue();
     }
 
     @Test
     void shouldNotDetectOverBudgetOrders() {
-        assertThat(
-                service.isOverBudget(
-                        List.of(5, 2),
-                        List.of(5.0, 4.0),
-                        100.0
-                )
-        ).isFalse();
+        var beerOrders = new BeerOrders(
+                new BeerOrder(new Beer("Beer1", 5.0), 5),
+                new BeerOrder(new Beer("Beer2", 4.0), 2));
+
+        assertThat(service.isOverBudget(beerOrders,100.0))
+                .isFalse();
     }
 }

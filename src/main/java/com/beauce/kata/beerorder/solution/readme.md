@@ -134,7 +134,35 @@ public String generateInvoice(Pub pub,
     return result.toString();
 }
 ```
-
-
+## Step 4: Modify isOverBudget method
+Change the test `shouldDetectOverBudgetOrders`, the `isOverBudget` method will take a `BeerOrders` object and a budget.
+```java
+@Test
+void shouldDetectOverBudgetOrders() {
+    var beerOrders = new BeerOrders(
+            new BeerOrder(new Beer("Beer1", 6.0), 20),
+            new BeerOrder(new Beer("Beer2", 5.5), 15));
+    assertThat(service.isOverBudget(beerOrders, 100.0))
+            .isTrue();
+}
+```
+Modify the signature of the `isOverBudget` method to take a `BeerOrders` object and a budget.
+```java
+public boolean isOverBudget(BeerOrders beerOrders,
+                            double budget) {
+    return beerOrders.getTotalPrice() > budget;
+}
+```
+Change the second test `shouldNotDetectOverBudgetOrders`:
+```java
+@Test
+void shouldNotDetectOverBudgetOrders() {
+    var beerOrders = new BeerOrders(
+            new BeerOrder(new Beer("Beer1", 5.0), 5),
+            new BeerOrder(new Beer("Beer2", 4.0), 2));
+    assertThat(service.isOverBudget(beerOrders,100.0))
+            .isFalse();
+}
+```
 
 
