@@ -15,7 +15,7 @@ var invoice = service.generateInvoice(
         pub.name(),
         ...
 ```
-Create a Pub record from the test: Press [OPTION] + [ENTER] and select `Create record; ensure it has a name attribute.
+Create a `Pub` record from the test: Press [OPTION] + [ENTER] and select `Create record`; ensure it has a `name` attribute.
 ```java
 public record Pub(String name) {
     public Pub {
@@ -59,7 +59,7 @@ public record Beer(String name, double price) {
 ```
 
 ## Step 3: create a BeerOrder object
-The `generateInvoice method should take a `Pub` and a list of `BeerOrder` objects.
+The `generateInvoice` method should take a `Pub` and a list of `BeerOrder` objects.
 ```java
 List<BeerOrder> beerOrders = new ArrayList<>();
 beerOrders.add(new BeerOrder(guinnessBeer, 10));
@@ -137,7 +137,7 @@ public String generateInvoice(Pub pub,
 }
 ```
 ## Step 4: Modify isOverBudget method
-Change the test `shouldDetectOverBudgetOrders` and `shouldNotDetectOverBudgetOrders`, the `isOverBudget` method should take a `BeerOrders object and a budget.
+Change the test `shouldDetectOverBudgetOrders` and `shouldNotDetectOverBudgetOrders`, the `isOverBudget` method should take a `BeerOrders` object and a `budget`.
 ```java
 @Test
 void shouldDetectOverBudgetOrders() {
@@ -153,7 +153,7 @@ void shouldNotDetectOverBudgetOrders() {
     var beerOrders = new BeerOrders(
             new BeerOrder(new Beer("Beer1", 5.0), 5),
             new BeerOrder(new Beer("Beer2", 4.0), 2));
-    assertThat(service.isOverBudget(beerOrders,100.0))
+    assertThat(service.isOverBudget(beerOrders, 100.0))
             .isFalse();
 }
 ```
@@ -216,7 +216,7 @@ public String toString() {
             .formatted(beer.name(), quantity, beer.price(), totalPrice());
 }
 ```
-# Step 6: create a `UnitPrice` and `Quantity` class
+## Step 6: create a `UnitPrice` and `Quantity` class
 Modify test `shouldDetectOverBudgetOrders` to use the `UnitPrice` and `Quantity` classes.
 ```java
 var guinnessBeer = new Beer("Guinness", new UnitPrice(5.0));

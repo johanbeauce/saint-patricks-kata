@@ -57,7 +57,7 @@ class BeerOrderServiceTest {
                         new Beer("Beer2", new UnitPrice(4.0)),
                         new Quantity(2)));
 
-        assertThat(service.isOverBudget(beerOrders,100.0))
+        assertThat(service.isOverBudget(beerOrders, 100.0))
                 .isFalse();
     }
 }
