@@ -1,6 +1,7 @@
 # Step by step refactoring
 ## Step 1: create a Pub object
-The first parameter of the `generateInvoice` method, a string with value `O’Malley’s Pub`; the pub should be a class. So create a class for Pub.
+The first parameter of the generateInvoice method is a string with the value "O’Malley’s Pub", which represents a pub. Instead of using a plain string, the pub should be a class. So, let’s create a Pub class.
+
 Replace:
 ```java
 var invoice = service.generateInvoice(
@@ -14,7 +15,7 @@ var invoice = service.generateInvoice(
         pub.name(),
         ...
 ```
-Create a record 'Pub' form the test: [OPTION] + [ENTER] > create `record`; with a name attribute.
+Create a Pub record from the test: Press [OPTION] + [ENTER] and select `Create record; ensure it has a name attribute.
 ```java
 public record Pub(String name) {
     public Pub {
@@ -43,7 +44,7 @@ var invoice = service.generateInvoice(
         List.of(guinnessBeer.price(), kilkennyBeer.price())
 );
 ```
-From the test create a `Beer` object.
+Create a Beer `record`:
 ```java
 public record Beer(String name, double price) {
     public Beer {
@@ -58,21 +59,21 @@ public record Beer(String name, double price) {
 ```
 
 ## Step 3: create a BeerOrder object
-The generate invoice method should take a `Pub` and list of `BeerOrder` object.
+The `generateInvoice method should take a `Pub` and a list of `BeerOrder` objects.
 ```java
 List<BeerOrder> beerOrders = new ArrayList<>();
 beerOrders.add(new BeerOrder(guinnessBeer, 10));
 beerOrders.add(new BeerOrder(kilkennyBeer, 5));
 var invoice = service.generateInvoice(pub, beerOrders);
 ```
-Create the new method with the new signature:
+Create the new method with the updated signature:
 ```java
 public String generateInvoice(Pub pub, List<BeerOrder> beerOrders) {
     return null;
 }
 ```
-Run the test to make it fail. First step of TDD.
-Make it green as fast as possible:
+Run the test to make it fail (first step of TDD).
+Make it pass as quickly as possible:
 ```java
 public String generateInvoice(Pub pub,
                               List<BeerOrder> beerOrders) {
@@ -90,7 +91,8 @@ public String generateInvoice(Pub pub,
     return result.toString();
 }
 ```
-Next, can you make it better? Yes, let's refactor and create a first class collection with the `BeerOrder` list.
+### Refactoring: Introduce a BeerOrders Collection
+To improve code structure, create a first-class collection for `BeerOrder` objects.
 ```java
 var beerOrders = new BeerOrders(
         new BeerOrder(guinnessBeer, 10),
@@ -120,7 +122,7 @@ public class BeerOrders {
     }
 }
 ```
-Modify the `generateInvoice` method to use the `BeerOrders` object:
+Modify `generateInvoice` method to use `BeerOrders`:
 ```java
 public String generateInvoice(Pub pub,
                               BeerOrders beerOrders) {
@@ -135,7 +137,7 @@ public String generateInvoice(Pub pub,
 }
 ```
 ## Step 4: Modify isOverBudget method
-Change the test `shouldDetectOverBudgetOrders`, the `isOverBudget` method will take a `BeerOrders` object and a budget.
+Change the test `shouldDetectOverBudgetOrders` and `shouldNotDetectOverBudgetOrders`, the `isOverBudget` method should take a `BeerOrders object and a budget.
 ```java
 @Test
 void shouldDetectOverBudgetOrders() {
@@ -145,16 +147,7 @@ void shouldDetectOverBudgetOrders() {
     assertThat(service.isOverBudget(beerOrders, 100.0))
             .isTrue();
 }
-```
-Modify the signature of the `isOverBudget` method to take a `BeerOrders` object and a budget.
-```java
-public boolean isOverBudget(BeerOrders beerOrders,
-                            double budget) {
-    return beerOrders.getTotalPrice() > budget;
-}
-```
-Change the second test `shouldNotDetectOverBudgetOrders`:
-```java
+
 @Test
 void shouldNotDetectOverBudgetOrders() {
     var beerOrders = new BeerOrders(
@@ -164,8 +157,15 @@ void shouldNotDetectOverBudgetOrders() {
             .isFalse();
 }
 ```
+Modify `isOverBudget`:
+```java
+public boolean isOverBudget(BeerOrders beerOrders,
+                            double budget) {
+    return beerOrders.getTotalPrice() > budget;
+}
+```
 ## Step 5: create an Invoice class to refactor the generateInvoice method
-Modify `generateInvoice` method to use an `Invoice` object:
+Modify `generateInvoice` method to use an `Invoice`:
 ```java
     public String generateInvoice(Pub pub,
                                   BeerOrders beerOrders) {
@@ -173,7 +173,7 @@ Modify `generateInvoice` method to use an `Invoice` object:
                 .generate();
     }
 ```
-Create the `Invoice` class:
+Create the `Invoice` record:
 ```java
 public record Invoice(Pub pub, BeerOrders beerOrders) {
     public Invoice {
@@ -190,7 +190,7 @@ public record Invoice(Pub pub, BeerOrders beerOrders) {
     }
 }
 ```
-Implement the `generate` method; use a string a delegate the formatting to the `BeerOrders` object.
+Implement the `generate` method; use a string a delegate the formatting to `BeerOrders`.
 ```java
 public String generate() {
     return """
@@ -199,7 +199,7 @@ public String generate() {
             Total: %s€""".formatted(pub.name(), beerOrders.toString(), beerOrders.getTotalPrice());
 }
 ```
-Implement the `toString` method in the `BeerOrders` class:
+Implement the `toString` method in `BeerOrders` class:
 ```java
 @Override
 public String toString() {
@@ -208,12 +208,49 @@ public String toString() {
             .collect(Collectors.joining("\n"));
 }
 ```
-Implement the `toString` method in the `BeerOrder` class:
+Implement the `toString` method in `BeerOrder` class:
 ```java
 @Override
 public String toString() {
     return "%s - %d x %s€ = %s€"
             .formatted(beer.name(), quantity, beer.price(), totalPrice());
+}
+```
+# Step 6: create a `UnitPrice` and `Quantity` class
+Modify test `shouldDetectOverBudgetOrders` to use the `UnitPrice` and `Quantity` classes.
+```java
+var guinnessBeer = new Beer("Guinness", new UnitPrice(5.0));
+var kilkennyBeer = new Beer("Kilkenny", new UnitPrice(4.5));
+var beerOrders = new BeerOrders(
+        new BeerOrder(guinnessBeer, new Quantity(10)),
+        new BeerOrder(kilkennyBeer, new Quantity(5)));
+```
+Create the `Quantity` class:
+```java
+public record Quantity(int quantity) {
+    public Quantity {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than 0");
+        }
+    }
+}
+```
+Like this we can delegate the verification of the quantity to the `Quantity` class.
+Then, we do the same for the `UnitPrice` class; so that we can delegate the multiplication of the quantity by the price to the `UnitPrice` class.
+```java
+public record UnitPrice(double value) {
+    public UnitPrice {
+        if (value <= 0) {
+            throw new IllegalArgumentException("Price must be greater than 0");
+        }
+    }
+
+    public double multiplyBy(Quantity quantity) {
+        return BigDecimal.valueOf(value())
+                .multiply(BigDecimal.valueOf(quantity.value()))
+                .setScale(1, RoundingMode.HALF_UP)
+                .doubleValue();
+    }
 }
 ```
 

@@ -16,11 +16,13 @@ class BeerOrderServiceTest {
     @Test
     void shouldGenerateInvoiceCorrectly() {
         var pub = new Pub("O’Malley’s Pub");
-        var guinnessBeer = new Beer("Guinness", 5.0);
-        var kilkennyBeer = new Beer("Kilkenny", 4.5);
         var beerOrders = new BeerOrders(
-                new BeerOrder(guinnessBeer, 10),
-                new BeerOrder(kilkennyBeer, 5));
+                new BeerOrder(
+                        new Beer("Guinness", new UnitPrice(5.0)),
+                        new Quantity(10)),
+                new BeerOrder(
+                        new Beer("Kilkenny", new UnitPrice(4.5)),
+                        new Quantity(5)));
 
         var invoice = service.generateInvoice(pub, beerOrders);
 
@@ -34,8 +36,12 @@ class BeerOrderServiceTest {
     @Test
     void shouldDetectOverBudgetOrders() {
         var beerOrders = new BeerOrders(
-                new BeerOrder(new Beer("Beer1", 6.0), 20),
-                new BeerOrder(new Beer("Beer2", 5.5), 15));
+                new BeerOrder(
+                        new Beer("Beer1", new UnitPrice(6.0)),
+                        new Quantity(20)),
+                new BeerOrder(
+                        new Beer("Beer2", new UnitPrice(5.5)),
+                        new Quantity(15)));
 
         assertThat(service.isOverBudget(beerOrders, 100.0))
                 .isTrue();
@@ -44,8 +50,12 @@ class BeerOrderServiceTest {
     @Test
     void shouldNotDetectOverBudgetOrders() {
         var beerOrders = new BeerOrders(
-                new BeerOrder(new Beer("Beer1", 5.0), 5),
-                new BeerOrder(new Beer("Beer2", 4.0), 2));
+                new BeerOrder(
+                        new Beer("Beer1", new UnitPrice(5.0)),
+                        new Quantity(5)),
+                new BeerOrder(
+                        new Beer("Beer2", new UnitPrice(4.0)),
+                        new Quantity(2)));
 
         assertThat(service.isOverBudget(beerOrders,100.0))
                 .isFalse();
