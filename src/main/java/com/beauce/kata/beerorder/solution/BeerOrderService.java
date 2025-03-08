@@ -3,25 +3,16 @@ package com.beauce.kata.beerorder.solution;
 import java.util.List;
 
 public class BeerOrderService {
-    public String generateInvoice(String pubName, List<String> beerNames, List<Integer> quantities, List<Double> unitPrices) {
-        double totalCost = 0;
-        StringBuilder invoice = new StringBuilder("Invoice for " + pubName + ":\n");
-
-        for (int i = 0; i < beerNames.size(); i++) {
-            double cost = quantities.get(i) * unitPrices.get(i);
-            totalCost += cost;
-            invoice.append(beerNames.get(i))
-                    .append(" - ")
-                    .append(quantities.get(i))
-                    .append(" x ")
-                    .append(unitPrices.get(i))
-                    .append("€ = ")
-                    .append(cost)
-                    .append("€\n");
-        }
-
-        invoice.append("Total: ").append(totalCost).append("€");
-        return invoice.toString();
+    public String generateInvoice(Pub pub,
+                                  BeerOrders beerOrders) {
+        var result = new StringBuilder("Invoice for %s:\n".formatted(pub.name()));
+        beerOrders.forEach(beerOrder -> result.append("%s - %d x %.1f€ = %.1f€\n".formatted(
+                beerOrder.beer().name(),
+                beerOrder.quantity(),
+                beerOrder.beer().price(),
+                beerOrder.totalPrice())));
+        result.append("Total: %.1f€".formatted(beerOrders.getTotalPrice()));
+        return result.toString();
     }
 
     public boolean isOverBudget(List<Integer> quantities, List<Double> unitPrices, double budget) {

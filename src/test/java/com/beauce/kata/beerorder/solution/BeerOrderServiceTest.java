@@ -1,9 +1,9 @@
 package com.beauce.kata.beerorder.solution;
 
-import com.beauce.kata.beerorder.BeerOrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,12 +21,10 @@ class BeerOrderServiceTest {
         var pub = new Pub("O’Malley’s Pub");
         var guinnessBeer = new Beer("Guinness", 5.0);
         var kilkennyBeer = new Beer("Kilkenny", 4.5);
-        var invoice = service.generateInvoice(
-                pub.name(),
-                List.of(guinnessBeer.name(), kilkennyBeer.name()),
-                List.of(10, 5),
-                List.of(guinnessBeer.price(), kilkennyBeer.price())
-        );
+        var beerOrders = new BeerOrders(
+                new BeerOrder(guinnessBeer, 10),
+                new BeerOrder(kilkennyBeer, 5));
+        var invoice = service.generateInvoice(pub, beerOrders);
 
         assertThat(invoice)
                 .contains(
