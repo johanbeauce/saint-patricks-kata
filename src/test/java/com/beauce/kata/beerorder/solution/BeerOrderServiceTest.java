@@ -18,8 +18,9 @@ class BeerOrderServiceTest {
 
     @Test
     void shouldGenerateInvoiceCorrectly() {
+        var pub = new Pub("O’Malley’s Pub");
         var invoice = service.generateInvoice(
-                "O’Malley’s Pub",
+                pub.name(),
                 List.of("Guinness", "Kilkenny"),
                 List.of(10, 5),
                 List.of(5.0, 4.5)
