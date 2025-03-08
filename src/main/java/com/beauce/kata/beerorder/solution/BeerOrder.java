@@ -19,4 +19,10 @@ public record BeerOrder(Beer beer, int quantity) {
                 .setScale(1, RoundingMode.HALF_UP)
                 .doubleValue();
     }
+
+    @Override
+    public String toString() {
+        return "%s - %d x %s€ = %s€"
+                .formatted(beer.name(), quantity, beer.price(), totalPrice());
+    }
 }

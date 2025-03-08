@@ -1,7 +1,7 @@
 package com.beauce.kata.beerorder.solution;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class BeerOrders {
     private final List<BeerOrder> beerOrders;
@@ -13,13 +13,16 @@ public class BeerOrders {
         this.beerOrders = List.of(beerOrders);
     }
 
-    public void forEach(Consumer<BeerOrder> action) {
-        beerOrders.forEach(action);
-    }
-
     public double getTotalPrice() {
         return beerOrders.stream()
                 .mapToDouble(BeerOrder::totalPrice)
                 .sum();
+    }
+
+    @Override
+    public String toString() {
+        return beerOrders.stream()
+                .map(Record::toString)
+                .collect(Collectors.joining("\n"));
     }
 }

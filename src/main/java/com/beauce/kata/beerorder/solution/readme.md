@@ -164,5 +164,61 @@ void shouldNotDetectOverBudgetOrders() {
             .isFalse();
 }
 ```
+## Step 5: create an Invoice class to refactor the generateInvoice method
+Modify `generateInvoice` method to use an `Invoice` object:
+```java
+    public String generateInvoice(Pub pub,
+                                  BeerOrders beerOrders) {
+        return new Invoice(pub, beerOrders)
+                .generate();
+    }
+```
+Create the `Invoice` class:
+```java
+public record Invoice(Pub pub, BeerOrders beerOrders) {
+    public Invoice {
+        if (null == pub) {
+            throw new IllegalArgumentException("Pub cannot be null");
+        }
+        if (null == beerOrders) {
+            throw new IllegalArgumentException("BeerOrders cannot be null");
+        }
+    }
+
+    public String generate() {
+        return null;
+    }
+}
+```
+Implement the `generate` method; use a string a delegate the formatting to the `BeerOrders` object.
+```java
+public String generate() {
+    return """
+            Invoice for %s:
+            %s
+            Total: %s€""".formatted(pub.name(), beerOrders.toString(), beerOrders.getTotalPrice());
+}
+```
+Implement the `toString` method in the `BeerOrders` class:
+```java
+@Override
+public String toString() {
+    return beerOrders.stream()
+            .map(Record::toString)
+            .collect(Collectors.joining("\n"));
+}
+```
+Implement the `toString` method in the `BeerOrder` class:
+```java
+@Override
+public String toString() {
+    return "%s - %d x %s€ = %s€"
+            .formatted(beer.name(), quantity, beer.price(), totalPrice());
+}
+```
+
+
+
+
 
 
