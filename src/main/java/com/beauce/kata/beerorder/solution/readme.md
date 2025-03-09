@@ -1,5 +1,5 @@
 # Step by step refactoring
-## Step 1: create a Pub object
+## Step 1: create a `Pub` object
 The first parameter of the generateInvoice method is a string with the value "O’Malley’s Pub", which represents a pub. Instead of using a plain string, the pub should be a class. So, let’s create a Pub class.
 
 Replace:
@@ -25,13 +25,12 @@ public record Pub(String name) {
     }
 }
 ```
-This is called a value object; key characteristics of a `value object`:
-1. **Immutability**: The object’s state cannot be changed after creation.
-2. **Equality** by Value: Two Value Objects are considered equal if their attributes are the same.
-3. **No Identity**: Unlike entities, Value Objects do not have an identifier (ID).
-4. **Encapsulation**: The logic related to the Value Object should be encapsulated within the class.
+**Primitive Obsession** is a common code smell where primitive types (String, int, double, etc.) are used inappropriately to represent domain concepts. 
+This leads to scattered validation rules, unclear intent, and code duplication.
 
-## Step 2: create a Beer object
+In this refactoring, we addressed **Primitive Obsession** by introducing **Value Objects**, encapsulating domain logic inside small, well-defined classes such as `Pub`, `Beer`, `UnitPrice`, and `Quantity`.
+
+## Step 2: create a `Beer` object
 Modify the test to use a `Beer` object instead of a `string` and a `double`:
 ```java
 var pub = new Pub("O’Malley’s Pub");
@@ -44,7 +43,7 @@ var invoice = service.generateInvoice(
         List.of(guinnessBeer.price(), kilkennyBeer.price())
 );
 ```
-Create a Beer `record`:
+Create a `Beer` record:
 ```java
 public record Beer(String name, double price) {
     public Beer {
@@ -91,7 +90,7 @@ public String generateInvoice(Pub pub,
     return result.toString();
 }
 ```
-### Refactoring: Introduce a BeerOrders Collection
+### Refactoring: Introduce a `BeerOrders` Collection
 To improve code structure, create a first-class collection for `BeerOrder` objects.
 ```java
 var beerOrders = new BeerOrders(
@@ -136,7 +135,7 @@ public String generateInvoice(Pub pub,
     return result.toString();
 }
 ```
-## Step 4: Modify isOverBudget method
+## Step 4: Modify `isOverBudget` method
 Change the test `shouldDetectOverBudgetOrders` and `shouldNotDetectOverBudgetOrders`, the `isOverBudget` method should take a `BeerOrders` object and a `budget`.
 ```java
 @Test
@@ -164,7 +163,7 @@ public boolean isOverBudget(BeerOrders beerOrders,
     return beerOrders.getTotalPrice() > budget;
 }
 ```
-## Step 5: create an Invoice class to refactor the generateInvoice method
+## Step 5: create `Invoice` to refactor the `generateInvoice` method
 Modify `generateInvoice` method to use an `Invoice`:
 ```java
     public String generateInvoice(Pub pub,
@@ -173,7 +172,7 @@ Modify `generateInvoice` method to use an `Invoice`:
                 .generate();
     }
 ```
-Create the `Invoice` record:
+Create `Invoice` record:
 ```java
 public record Invoice(Pub pub, BeerOrders beerOrders) {
     public Invoice {
@@ -190,7 +189,7 @@ public record Invoice(Pub pub, BeerOrders beerOrders) {
     }
 }
 ```
-Implement the `generate` method; use a string a delegate the formatting to `BeerOrders`.
+Implement `generate` method; use a string a delegate the formatting to `BeerOrders`.
 ```java
 public String generate() {
     return """
@@ -199,7 +198,7 @@ public String generate() {
             Total: %s€""".formatted(pub.name(), beerOrders.toString(), beerOrders.getTotalPrice());
 }
 ```
-Implement the `toString` method in `BeerOrders` class:
+Implement `toString` method in `BeerOrders` class:
 ```java
 @Override
 public String toString() {
@@ -236,7 +235,7 @@ public record Quantity(int quantity) {
 }
 ```
 Like this we can delegate the verification of the quantity to the `Quantity` class.
-Then, we do the same for the `UnitPrice` class; so that we can delegate the multiplication of the quantity by the price to the `UnitPrice` class.
+Then, we do the same for `UnitPrice`; so that we can delegate the multiplication of the quantity by the price to `UnitPrice`.
 ```java
 public record UnitPrice(double value) {
     public UnitPrice {
@@ -253,7 +252,25 @@ public record UnitPrice(double value) {
     }
 }
 ```
+# Conclusion
 
+Through this step-by-step refactoring, we have improved the design of our `generateInvoice` method by introducing **Value Objects** and a **First-Class Collection**, two essential object-oriented design patterns that enhance code clarity, maintainability and robustness.
+1. **Value Objects**
+
+We replaced primitive data types (e.g., String for pub names, double for beer prices, int for quantities) with domain-specific types such as `Pub`, `Beer`, `UnitPrice`, and `Quantity`.
+**Value Objects** bring several benefits:
+* **Encapsulation of domain logic**: Business rules (e.g., “a price must be greater than zero”) are now self-contained within their respective classes.
+* **Immutability**: Once created, a value object cannot be modified, ensuring safe and predictable behavior.
+* **Equality by value**: Two Beer objects with the same name and price are considered equal, reinforcing business logic consistency.
+
+2. **First-Class Collection**
+
+Instead of working with `List<BeerOrder>`, we introduced a dedicated `BeerOrders` record, making the collection a **first-class** citizen in our domain model.
+Benefits include:
+* **Encapsulation of collection-specific logic**: Methods like `getTotalPrice()` are now inside `BeerOrders`, reducing code duplication in services.
+* **Stronger domain modeling**: The collection is no longer a generic List, but an explicit domain concept, improving readability and maintainability.
+
+These principles—**Value Objects** and **First-Class Collections**—are fundamental in **Domain-Driven Design** (DDD), where modeling the business domain accurately leads to more robust and scalable applications. By applying them, our invoice generation logic is not only easier to understand but also more resistant to errors.
 
 
 
