@@ -10,3 +10,7 @@ Unfortunately, the system currently tracks everything with raw numbers. Pubs spe
 Last year, O’Malley’s Pub accidentally ordered 50 kegs instead of 50 pints, and Patrick had to cover the loss.
 
 Let’s refactor this messy system and make things safer!
+
+![exercise.png](__assets/exercise.png)
+
+[![solution.png](__assets/solution.png)](solution/ste-by-step.md)
