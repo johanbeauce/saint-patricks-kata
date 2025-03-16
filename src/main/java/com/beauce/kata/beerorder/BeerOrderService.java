@@ -4,6 +4,10 @@ import java.util.List;
 
 public class BeerOrderService {
     public String generateInvoice(String pubName, List<String> beerNames, List<Integer> quantities, List<Double> unitPrices) {
+        if (null == pubName || pubName.isEmpty()) {
+            throw new IllegalArgumentException("Pub name cannot be null or empty");
+        }
+
         double totalCost = 0;
         StringBuilder invoice = new StringBuilder("Invoice for " + pubName + ":\n");
 
