@@ -2,6 +2,8 @@
 --------------------------------
 ## 🍀 St. Patrick’s Beer Order System: The Chaos of Raw Numbers!
 
+> **_Inspired:_** This exercise is inspired by an existing exercise from [Advent of Craft 2024](https://github.com/advent-of-craft/2024). We highly recommend their exercises and sincerely thank them for their excellent work.
+
 Patrick runs a beer delivery service for St. Patrick’s Day. 🍻
 Each pub orders different types of beer in varying amounts.
 
