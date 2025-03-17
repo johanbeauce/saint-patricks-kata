@@ -15,4 +15,4 @@ Let’s refactor this messy system and make things safer!
 
 ![exercise.png](__assets/exercise.png)
 
-[![solution.png](__assets/solution.png)](solution/ste-by-step.md)
+[![solution.png](__assets/solution.png)](solution/step-by-step.md)
